@@ -3,8 +3,7 @@ import Navbar from "@/components/Navbar";
 
 export default function Home() {
   return (
-    <main className="">
-      {/* <Navbar /> */}
+    <main className="w-full">
       <BookingRequestTable />
     </main>
   );
