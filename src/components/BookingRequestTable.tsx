@@ -20,6 +20,7 @@ interface Booking {
   departure_time: string;
   departure_date: string;
   user_name: string;
+  bus_number: string;
 }
 
 interface Props {
@@ -109,6 +110,7 @@ const BookingRequestTable = ({ bookings, setBookings }: Props) => {
                   user_name={booking.user_name}
                   onAccept={handleAcceptOnClick}
                   onReject={handleRejectOnClick}
+                  bus_number={booking.bus_number ? booking.bus_number : "XXX"}
                 />
               ))
           ) : (

@@ -16,7 +16,7 @@ export default function Home() {
         const data = response.data?.pending_bookings;
 
         if (Array.isArray(data)) {
-          setBookings(data);
+          setBookings(data.filter((booking) => booking.booking_id !== null));
         } else {
           console.log("No bookings found or data format is incorrect");
         }
