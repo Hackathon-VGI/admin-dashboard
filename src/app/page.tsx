@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useEffect, useState } from "react";
 import request from "@/utils/api";
@@ -7,16 +7,13 @@ import BookingRequestTable from "@/components/BookingRequestTable";
 import { Booking } from "@/utils/type";
 
 export default function Home() {
-  const [bookings, setBookings] = useState<Booking[]>([]); 
+  const [bookings, setBookings] = useState<Booking[]>([]);
 
   useEffect(() => {
     const fetchBookings = async () => {
       try {
         const response = await request.get(`${endPoints.manage_bookings}`);
         const data = response.data?.pending_bookings;
-
-        console.log(data);
-        console.log(data?.[0]);
 
         if (Array.isArray(data)) {
           setBookings(data);

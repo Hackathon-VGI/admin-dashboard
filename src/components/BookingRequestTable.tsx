@@ -38,13 +38,16 @@ const BookingRequestTable = ({ bookings, setBookings }: Props) => {
       });
 
       // Update the UI by removing the approved booking
-      setBookings((prevBookings) => prevBookings.filter((booking) => booking.booking_id !== booking_id));
+      console.log(booking_id);
+      setBookings((prevBookings) =>
+        prevBookings.filter((booking) => booking.booking_id !== booking_id)
+      );
 
       // Show success notification
-      toast.success("Approved")
+      toast.success("Approved");
     } catch (error: any) {
       console.error("Error approving booking:", error.message);
-      toast.error("Error Approving The Booking")
+      toast.error("Error Approving The Booking");
     }
   };
 
@@ -56,13 +59,15 @@ const BookingRequestTable = ({ bookings, setBookings }: Props) => {
       });
 
       // Update the UI by removing the rejected booking
-      setBookings((prevBookings) => prevBookings.filter((booking) => booking.booking_id !== booking_id));
+      setBookings((prevBookings) =>
+        prevBookings.filter((booking) => booking.booking_id !== booking_id)
+      );
 
       // Show success notification
-      toast.success("Rejected")
+      toast.success("Rejected");
     } catch (error: any) {
       console.error("Error rejecting booking:", error.message);
-      toast.error("Error Rejecting The Booking")
+      toast.error("Error Rejecting The Booking");
     }
   };
 
@@ -90,18 +95,22 @@ const BookingRequestTable = ({ bookings, setBookings }: Props) => {
         </TableHeader>
         <TableBody>
           {bookings.length > 0 ? (
-            bookings.map((booking, index) => (
-              <CustomTableRow
-                key={index}
-                booking_id={booking.booking_id}
-                bus_route={booking.bus_route}
-                departure_time={booking.departure_time}
-                departure_date={booking.departure_date}
-                user_name={booking.user_name}
-                onAccept={handleAcceptOnClick}
-                onReject={handleRejectOnClick}
-              />
-            ))
+            bookings
+              .filter((elem) =>
+                elem.bus_route.toLowerCase().includes(searchText.toLowerCase())
+              )
+              .map((booking, index) => (
+                <CustomTableRow
+                  key={index}
+                  booking_id={booking.booking_id}
+                  bus_route={booking.bus_route}
+                  departure_time={booking.departure_time}
+                  departure_date={booking.departure_date}
+                  user_name={booking.user_name}
+                  onAccept={handleAcceptOnClick}
+                  onReject={handleRejectOnClick}
+                />
+              ))
           ) : (
             <TableRow>
               <TableCell colSpan={6} className="text-center">

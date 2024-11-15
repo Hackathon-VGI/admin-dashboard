@@ -33,7 +33,6 @@ const ManageRoutes = () => {
         if (Array.isArray(data)) {
           setStops(data);
 
-
           const initialBlockStatus: Record<string, boolean> = {};
           data.forEach((stop) => {
             initialBlockStatus[stop] = false;
@@ -50,7 +49,10 @@ const ManageRoutes = () => {
     fetchStopNames();
   }, []);
 
-  const handleToggleBlock = async (stop_name: string, currentStatus: boolean) => {
+  const handleToggleBlock = async (
+    stop_name: string,
+    currentStatus: boolean
+  ) => {
     try {
       const newStatus = !currentStatus;
 
@@ -63,8 +65,6 @@ const ManageRoutes = () => {
         ...prevStatus,
         [stop_name]: newStatus,
       }));
-
-      console.log(response.data)
 
       toast.success("Stop Status Updated");
     } catch (error: any) {
@@ -87,19 +87,23 @@ const ManageRoutes = () => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="text-center">Bus Stops</TableHead>
+            <TableHead className="text-left">Bus Stops</TableHead>
             <TableHead className="text-center">Block</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {stops.map((stop, index) => (
-            <CustomTableRow
-              key={index}
-              stop_name={stop}
-              onToggleBlock={handleToggleBlock}
-              toggleBlock={blockStatus[stop]}
-            />
-          ))}
+          {stops
+            .filter((elem) =>
+              elem.toLowerCase().includes(searchText.toLowerCase())
+            )
+            .map((stop, index) => (
+              <CustomTableRow
+                key={index}
+                stop_name={stop}
+                onToggleBlock={handleToggleBlock}
+                toggleBlock={blockStatus[stop]}
+              />
+            ))}
         </TableBody>
       </Table>
     </div>
@@ -113,7 +117,7 @@ const CustomTableRow = ({
 }: RowProps) => {
   return (
     <TableRow>
-      <TableCell className="text-[#212529] text-center">{stop_name}</TableCell>
+      <TableCell className="text-[#212529] text-left">{stop_name}</TableCell>
       <TableCell className="text-center flex justify-center items-center gap-3">
         <button
           className={`${
