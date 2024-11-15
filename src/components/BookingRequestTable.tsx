@@ -3,16 +3,69 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
+import request from "@/utils/api";
+import { endPoints } from "@/utils/endPoints";
+import { toast } from "sonner";
+import CustomTableRow from "./CustomTableRow";
 
-const BookingRequestTable = () => {
+interface Booking {
+  booking_id: string;
+  bus_route: string;
+  departure_time: string;
+  departure_date: string;
+  user_name: string;
+}
+
+interface Props {
+  bookings: Booking[];
+  setBookings: React.Dispatch<React.SetStateAction<Booking[]>>; // To update the bookings state
+}
+
+const BookingRequestTable = ({ bookings, setBookings }: Props) => {
   const [searchText, setSearchText] = useState("");
+
+  const handleAcceptOnClick = async (booking_id: string) => {
+    try {
+      const response = await request.post(`${endPoints.review_booking}`, {
+        booking_id,
+        booking_status: "Approve",
+      });
+
+      // Update the UI by removing the approved booking
+      setBookings((prevBookings) => prevBookings.filter((booking) => booking.booking_id !== booking_id));
+
+      // Show success notification
+      toast.success("Approved")
+    } catch (error: any) {
+      console.error("Error approving booking:", error.message);
+      toast.error("Error Approving The Booking")
+    }
+  };
+
+  const handleRejectOnClick = async (booking_id: string) => {
+    try {
+      const response = await request.post(`${endPoints.review_booking}`, {
+        booking_id,
+        booking_status: "Reject",
+      });
+
+      // Update the UI by removing the rejected booking
+      setBookings((prevBookings) => prevBookings.filter((booking) => booking.booking_id !== booking_id));
+
+      // Show success notification
+      toast.success("Rejected")
+    } catch (error: any) {
+      console.error("Error rejecting booking:", error.message);
+      toast.error("Error Rejecting The Booking")
+    }
+  };
+
   return (
     <div className="w-full flex justify-start mt-3 items-start gap-2 flex-col">
       <div className="w-full">
@@ -20,7 +73,7 @@ const BookingRequestTable = () => {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           placeholder="Search Bookings"
-          className="w-full  h-10 bg-white p-2 outline-none border border-solid border-black rounded"
+          className="w-full h-10 bg-white p-2 outline-none border border-solid border-black rounded"
           type="text"
         />
       </div>
@@ -36,80 +89,29 @@ const BookingRequestTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <CustomTableRow
-            busRoute="THI - Rathuas"
-            time="09:00"
-            date="10.11.2024"
-            name="Sikander"
-          />
-          <CustomTableRow
-            busRoute="THI - Rathuas"
-            time="09:00"
-            date="10.11.2024"
-            name="Sikander"
-          />
-          <CustomTableRow
-            busRoute="THI - Rathuas"
-            time="09:00"
-            date="10.11.2024"
-            name="Sikander"
-          />
-          <CustomTableRow
-            busRoute="THI - Rathuas"
-            time="09:00"
-            date="10.11.2024"
-            name="Sikander"
-          />
-          <CustomTableRow
-            busRoute="THI - Rathuas"
-            time="09:00"
-            date="10.11.2024"
-            name="Sikander"
-          />
-          <CustomTableRow
-            busRoute="THI - Rathuas"
-            time="09:00"
-            date="10.11.2024"
-            name="Sikander"
-          />
-          <CustomTableRow
-            busRoute="THI - Rathuas"
-            time="09:00"
-            date="10.11.2024"
-            name="Sikander"
-          />
+          {bookings.length > 0 ? (
+            bookings.map((booking, index) => (
+              <CustomTableRow
+                key={index}
+                booking_id={booking.booking_id}
+                bus_route={booking.bus_route}
+                departure_time={booking.departure_time}
+                departure_date={booking.departure_date}
+                user_name={booking.user_name}
+                onAccept={handleAcceptOnClick}
+                onReject={handleRejectOnClick}
+              />
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center">
+                No Bookings Found
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>
-  );
-};
-
-type RowProps = {
-  busRoute: string;
-  time: string;
-  date: string;
-  name: string;
-};
-
-const CustomTableRow = ({ busRoute, time, date, name }: RowProps) => {
-  return (
-    <TableRow>
-      <TableCell className="text-[#212529] text-center font-medium">
-        XXX
-      </TableCell>
-      <TableCell className="text-[#212529] text-center">{busRoute}</TableCell>
-      <TableCell className="text-[#212529] text-center">{time}</TableCell>
-      <TableCell className="text-[#212529] text-center">{date}</TableCell>
-      <TableCell className="text-[#212529] text-center">{name}</TableCell>
-      <TableCell className="text-center flex justify-center items-center gap-3">
-        <button className="bg-green-500 text-white p-2 rounded w-full">
-          Approve
-        </button>
-        <button className="bg-red-500 text-white p-2 rounded w-full">
-          Reject
-        </button>
-      </TableCell>
-    </TableRow>
   );
 };
 
