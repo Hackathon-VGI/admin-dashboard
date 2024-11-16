@@ -17,7 +17,7 @@ const CustomTableRow = ({
   return (
     <TableRow>
       <TableCell className="text-[#212529] text-center font-medium">
-        XXX
+        {bus_number}
       </TableCell>
       <TableCell className="text-[#212529] text-center">{bus_route}</TableCell>
       <TableCell className="text-[#212529] text-center">
